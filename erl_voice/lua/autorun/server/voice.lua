@@ -11,10 +11,6 @@ erl_voicesv.options = {23000,359684,886371}
 
 
 hook.Add("PlayerCanHearPlayersVoice", "Togglevoice", function(listner, ply)
-    print("talking")
-    erl_voice.x = erl_voice.x or 0
-    erl_voice.x = erl_voice.x + 1 
-    print(erl_voice.x)
     if listner:GetPos():DistToSqr(ply:GetPos()) <= erl_voicesv.options[erl_voice[ply].set] then
         return true, true
     else
@@ -37,15 +33,12 @@ hook.Add("OnPlayerChangedTeam", "erl_voiceChangeSettingOnJobChange", function(pl
 end)
 
 hook.Add("Think", "SvJobThing", function()
-    for k,v in pairs(ents.GetAll()) do 
-        if v:IsPlayer() then 
-            erl_voice[v] = erl_voice[v] or {}  
-            erl_voice[v].k = erl_voice[v].k or 0
-            erl_voice[v].set = erl_voice[v].set or 1
+    for k,ply in pairs(player.GetAll()) do 
+        erl_voice[ply] = erl_voice[ply] or {}  
+        erl_voice[ply].k = erl_voice[ply].k or 0
+        erl_voice[ply].set = erl_voice[ply].set or 1
 
-            erl_voice[v].job = v:getDarkRPVar("job")
-            erl_voice[v].maxv = config[erl_voice[v].job]
-        end
+        erl_voice[ply].job = v:getDarkRPVar("job")
     end
 end)
 
@@ -53,7 +46,7 @@ concommand.Add("voicesett", function(ply)
 
     erl_voice[ply].k = erl_voice[ply].k + 1
 
-    erl_voice[ply].set = erl_voice[ply].k % erl_voice[ply].maxv + 1
+    erl_voice[ply].set = erl_voice[ply].k % config[erl_voice[ply].job] + 1
 
     net.Start("erl_voiceRangeTransmiter")
         net.WriteInt(erl_voice[ply].set, 16)
