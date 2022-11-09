@@ -6,10 +6,20 @@ local config = include("../voice_config.lua")
 erl_voice = {}
 
 erl_voicesv = {}
-erl_voicesv.options = {200,500,1000}
+erl_voicesv.options = {23000,359684,886371}
 
-hook.Add("PlayerCanHearPlayersVoice", "Togglevoice", function(listner, speaker)
-    return listner:GetPos():Distance(speaker:GetPos()) <= erl_voicesv.options[erl_voice[speaker].set]
+
+
+hook.Add("PlayerCanHearPlayersVoice", "Togglevoice", function(listner, ply)
+    print("talking")
+    erl_voice.x = erl_voice.x or 0
+    erl_voice.x = erl_voice.x + 1 
+    print(erl_voice.x)
+    if listner:GetPos():DistToSqr(ply:GetPos()) <= erl_voicesv.options[erl_voice[ply].set] then
+        return true, true
+    else
+        return false
+    end
 end)
 
 hook.Add("OnPlayerChangedTeam", "erl_voiceChangeSettingOnJobChange", function(ply)
